@@ -70,24 +70,29 @@ class ModelCreate:
                   verbose=0)
 
         train_predict = model.predict(train_x)
-        test_predict = model.predict(test_y)
+        test_predict = model.predict(test_x)
+
+        train_predict = self.scaler.inverse_transform(train_predict)
+        train_y = self.scaler.inverse_transform([train_y])
+        test_predict = self.scaler.inverse_transform(test_predict)
+        test_y = self.scaler.inverse_transform([test_y])
 
         model_info = ModelInfo(
-            dataset=dataset,
-            train_predict=train_predict,
-            test_predict=test_predict,
+            dataset=dataset.tolist(),
+            train_predict=train_predict.tolist(),
+            test_predict=test_predict.tolist(),
             mse_train=np.sqrt(mean_squared_error(train_y[0], train_predict[:, 0])),
             mse_test=np.sqrt(mean_squared_error(test_y[0], test_predict[:, 0])),
             create_date=datetime.datetime.now()
         )
 
-        # model_info.save_to_db()
-        # self.parameters.save_to_db()
+        model_info.save_to_db()
+        self.parameters.save_to_db()
 
-        with open(os.path.join(os.pardir, f"models/{self.parameters.ticker}_model.pkl"), "wb") as file:
-            pickle.dump(model, file)
+        model.save(os.path.join(os.getcwd(), fr"models\{self.parameters.ticker}_model.h5"))
 
-        with open(os.path.join(os.pardir, f"models/{self.parameters.ticker}_scaler.pkl"), "wb") as file:
+        with open(os.path.join(os.path.join(os.getcwd(),
+                               fr"models\{self.parameters.ticker}_scaler.pkl")), "w+b") as file:
             pickle.dump(self.scaler, file)
 
         return model_info

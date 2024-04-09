@@ -20,7 +20,7 @@ class BaseModels:
         model = Sequential()
         # TODO -> consider to add a transfer learning
         model.add(LSTM(units=model_param.units,
-                       input_shape=model_param.input_shape,
+                       input_shape=(model_param.input_shape_min, model_param.input_shape_max),
                        activation=model_param.activation))
         model.add(Dense(1))
         return model

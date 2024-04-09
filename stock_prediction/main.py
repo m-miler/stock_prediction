@@ -1,5 +1,5 @@
 import uvicorn
-from typing import Union
+from typing import Union, Any
 from fastapi import FastAPI
 
 from model.model import Model
@@ -11,13 +11,8 @@ from dataclasses import asdict
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/model/create/")
-async def create_model(model_params: ModelParameters):
+async def create_model(model_params: ModelParameters) -> dict:
     model: ModelInfo = ModelCreate(model_params=model_params).create()
     return asdict(model)
 
