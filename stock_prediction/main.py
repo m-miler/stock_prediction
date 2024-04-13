@@ -8,6 +8,8 @@ from model.info import ModelParameters, ModelInfo
 
 from dataclasses import asdict
 
+Base.metadata.create_all(bind=settings.engine)
+
 app = FastAPI()
 
 

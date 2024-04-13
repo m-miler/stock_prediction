@@ -8,9 +8,13 @@ import pickle
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
+from sqlalchemy.orm import Session
 
 from .base import BaseModels
 from .info import ModelParameters, ModelInfo
+from stock_prediction.config import settings
+from stock_prediction.orm.models import ModelInfoDb, ModelParametersDb
+from dataclasses import asdict
 
 
 class ModelCreate:
@@ -86,8 +90,7 @@ class ModelCreate:
             create_date=datetime.datetime.now()
         )
 
-        model_info.save_to_db()
-        self.parameters.save_to_db()
+        self._save_model_info_to_db(model_info=model_info)
 
         model.save(os.path.join(os.getcwd(), fr"models\{self.parameters.ticker}_model.h5"))
 
@@ -96,3 +99,12 @@ class ModelCreate:
             pickle.dump(self.scaler, file)
 
         return model_info
+
+    def _save_model_info_to_db(self, model_info: ModelInfo):
+        session: Session = settings.SessionLocal()
+        session.add(ModelInfoDb(id=f'{self.parameters.ticker}_{self.parameters.model}',
+                                **asdict(model_info)))
+        session.add(ModelParametersDb(id=f'{self.parameters.ticker}_{self.parameters.model}',
+                                      **asdict(self.parameters)))
+        session.commit()
+        session.close()

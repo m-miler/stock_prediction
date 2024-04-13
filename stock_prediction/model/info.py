@@ -17,9 +17,6 @@ class ModelInfo:
     def __iter__(self):
         return iter(asdict(self))
 
-    def save_to_db(self):
-        pass
-
 
 @dataclass
 class ModelParameters:
@@ -35,6 +32,3 @@ class ModelParameters:
 
     def __iter__(self):
         return iter(asdict(self))
-
-    def save_to_db(self):
-        pass
