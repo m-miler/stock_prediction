@@ -1,15 +1,14 @@
 import datetime
 
-import numpy as np
-
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
+from pydantic import BaseModel
 
 
 @dataclass
 class ModelInfo:
-    dataset: list
-    train_predict: list
-    test_predict: list
+    dataset: list[float]
+    train_predict: list[float]
+    test_predict: list[float]
     mse_train: float
     mse_test: float
     create_date: datetime.datetime
@@ -19,7 +18,7 @@ class ModelInfo:
 
 
 @dataclass
-class ModelParameters:
+class ModelParameters(BaseModel):
     ticker: str
     model: str
     units: int
@@ -29,6 +28,11 @@ class ModelParameters:
     batch_size: int = 1
     activation: str = 'relu'
     optimizer: str = 'adam'
+
+    info: list[ModelInfo] = field(default_factory=list)
+
+    class Config:
+        orm_model = True
 
     def __iter__(self):
         return iter(asdict(self))

@@ -5,7 +5,7 @@ import requests
 
 from keras.models import load_model
 from pandas.tseries.offsets import BDay
-from datetime import date, timedelta
+from datetime import date
 
 
 class Model:
@@ -43,12 +43,6 @@ class Model:
                 raise IndexError(f"Missing price data for date: {d}")
 
         return np.array(input_data)
-
-    def get_model_info(self) -> dict:
-        # TODO -> if model exists check the previous information in database
-        # TODO -> Use postgres/sqlite3 and sqlalchemy
-        # return model info or none
-        pass
 
     def __getattr__(self, item):
         if item == "scaler":
