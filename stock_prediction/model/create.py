@@ -12,13 +12,13 @@ from sqlalchemy.orm import Session
 
 from .base import BaseModels
 from .info import ModelParameters, ModelInfo
-from stock_prediction.config import settings
-from stock_prediction.orm.models import ModelInfoDb, ModelParametersDb
+from config import settings
+from orm.models import ModelInfoDb, ModelParametersDb
 from dataclasses import asdict
 
 
 class ModelCreate:
-    base_url = 'http://localhost:8080'
+    base_url = 'http://stock-api:8080'
 
     def __init__(self, model_params: ModelParameters = None):
         self.parameters = model_params

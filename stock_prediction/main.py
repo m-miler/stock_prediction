@@ -1,5 +1,6 @@
 import uvicorn
 import orm.crud as crud
+import sys
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -12,6 +13,7 @@ from config import settings
 
 from dataclasses import asdict
 
+sys.path.append("..")
 Base.metadata.create_all(bind=settings.engine)
 
 app = FastAPI()
@@ -43,7 +45,3 @@ def model_into(ticker: str, model: str, db: Session = Depends(get_db)):
     if model_info is None:
         raise HTTPException(status_code=404, detail="Model has not been created.")
     return model_info
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
