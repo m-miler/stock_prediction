@@ -102,13 +102,13 @@ class ModelCreate:
 
     def _save_model_info_to_db(self, model_info: ModelInfo):
         session: Session = settings.SessionLocal()
+        self.parameters.info = [
+            ModelInfoDb(id=f'{self.parameters.ticker}_{self.parameters.model}', **asdict(model_info))
+        ]
         session.add(
             ModelParametersDb(
                 id=f'{self.parameters.ticker}_{self.parameters.model}',
-                **asdict(self.parameters),
-                info=[
-                    ModelInfoDb(id=f'{self.parameters.ticker}_{self.parameters.model}', **asdict(model_info))
-                ]
+                **asdict(self.parameters)
             )
         )
         session.commit()
