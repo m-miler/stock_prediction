@@ -1,23 +1,21 @@
 import datetime
 
-from dataclasses import dataclass, asdict, field
+from dataclasses import field
 from pydantic import BaseModel
 
 
-@dataclass
-class ModelInfo:
-    dataset: list[float]
-    train_predict: list[float]
-    test_predict: list[float]
+class ModelInfo(BaseModel):
+    dataset: list[list[float]]
+    train_predict: list[list[float]]
+    test_predict: list[list[float]]
     mse_train: float
     mse_test: float
     create_date: datetime.datetime
 
-    def __iter__(self):
-        return iter(asdict(self))
+    class Config:
+        orm_mode = True
 
 
-@dataclass
 class ModelParameters(BaseModel):
     ticker: str
     model: str
@@ -32,7 +30,4 @@ class ModelParameters(BaseModel):
     info: list[ModelInfo] = field(default_factory=list)
 
     class Config:
-        orm_model = True
-
-    def __iter__(self):
-        return iter(asdict(self))
+        orm_mode = True

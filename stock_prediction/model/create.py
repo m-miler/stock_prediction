@@ -14,7 +14,7 @@ from .base import BaseModels
 from .info import ModelParameters, ModelInfo
 from config import settings
 from orm.models import ModelInfoDb, ModelParametersDb
-from dataclasses import asdict
+from orm.crud import get_model_info
 
 
 class ModelCreate:
@@ -76,6 +76,7 @@ class ModelCreate:
         train_predict = model.predict(train_x)
         test_predict = model.predict(test_x)
 
+        dataset = self.scaler.inverse_transform(dataset)
         train_predict = self.scaler.inverse_transform(train_predict)
         train_y = self.scaler.inverse_transform([train_y])
         test_predict = self.scaler.inverse_transform(test_predict)
@@ -102,14 +103,29 @@ class ModelCreate:
 
     def _save_model_info_to_db(self, model_info: ModelInfo):
         session: Session = settings.SessionLocal()
-        self.parameters.info = [
-            ModelInfoDb(id=f'{self.parameters.ticker}_{self.parameters.model}', **asdict(model_info))
-        ]
-        session.add(
-            ModelParametersDb(
-                id=f'{self.parameters.ticker}_{self.parameters.model}',
-                **asdict(self.parameters)
-            )
+        self.parameters.info.append(
+            ModelInfoDb(id=f'{self.parameters.ticker}_{self.parameters.model}', **model_info.dict())
         )
+        model_obj = get_model_info(session, self.parameters.ticker, self.parameters.model)
+
+        if model_obj is None:
+            session.add(
+                ModelParametersDb(
+                    id=f'{self.parameters.ticker}_{self.parameters.model}',
+                    **self.parameters.__dict__
+                )
+            )
+        else:
+
+            session.query(ModelParametersDb).filter(
+                ModelParametersDb.id == f'{self.parameters.ticker}_{self.parameters.model}').update(
+                {k: v for k, v in self.parameters.__dict__.items() if k != "info"},
+            )
+
+            session.query(ModelInfoDb).filter(
+                ModelInfoDb.id == f'{self.parameters.ticker}_{self.parameters.model}').update(
+                model_info.dict(),
+            )
+
         session.commit()
         session.close()

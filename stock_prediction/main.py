@@ -27,10 +27,10 @@ def get_db():
         db.close()
 
 
-@app.post("/model/create/")
-def create_model(model_params: ModelParameters) -> dict:
+@app.post("/model/create/", response_model=ModelInfo)
+def create_model(model_params: ModelParameters):
     model: ModelInfo = ModelCreate(model_params=model_params).create()
-    return asdict(model)
+    return model
 
 
 @app.get("/model/predict/{ticker}")
