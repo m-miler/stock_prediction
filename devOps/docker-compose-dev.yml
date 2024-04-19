@@ -22,14 +22,14 @@ services:
     container_name: model_db
     env_file:
       - db.dev.env
-#    volumes:
-#      - model:/var/lib/postgresql/data
+    volumes:
+      - model_data:/var/lib/postgresql/data
     networks:
       - app-internal-net
 
 networks:
   app-internal-net:
     external: true
-#
-#volumes:
-#  model:
+
+volumes:
+  model_data:
