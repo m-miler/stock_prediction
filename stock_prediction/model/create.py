@@ -40,8 +40,7 @@ class ModelCreate:
     @staticmethod
     def _train_test_split(dataset: np.array):
         train_size = int(len(dataset) * 0.67)
-        test_size = len(dataset) - train_size
-        train, test = dataset[0:train_size, :], dataset[test_size:len(dataset), :]
+        train, test = dataset[0:train_size, :], dataset[train_size:len(dataset), :]
         return train, test
 
     @staticmethod
