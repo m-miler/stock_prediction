@@ -29,8 +29,7 @@ class ModelCreate:
         response = requests.get(url)
         return response.json()
 
-    def _preprocess_dataset(self):
-        raw_data: dict = self._get_input_data()
+    def _preprocess_dataset(self, raw_data: dict):
         input_data = pd.DataFrame(data=raw_data,
                                   columns=["date", "open_price", "max_price", "min_price", "close_price"])
         dataset = input_data['close_price'].values.astype('float32').reshape(-1, 1)
@@ -61,9 +60,12 @@ class ModelCreate:
 
         return train_x, test_x, train_y, test_y
 
-    def create(self) -> ModelInfo:
+    def create(self) -> ModelInfo | None:
         model = BaseModels.get_base_model(self.parameters)
-        dataset = self._preprocess_dataset()
+        raw_data: dict = self._get_input_data()
+        if not raw_data:
+            return None
+        dataset = self._preprocess_dataset(raw_data)
         train_x, test_x, train_y, test_y = self._prepare_train_test_data(dataset)
 
         model.compile(loss='mean_squared_error', optimizer=self.parameters.optimizer)
