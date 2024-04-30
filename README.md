@@ -26,3 +26,7 @@ git clone https://github.com/m-miler/stock_prediction.git
 ```
   docker compose -f .\devOps\docker-compose-dev.yml up -d --build
 ```
+
+> [!NOTE]
+> This application works together with stock_web_scrapper app. 
+> Please see [stock_web_scrapper setup](https://github.com/m-miler/stock_web_scrapper)
