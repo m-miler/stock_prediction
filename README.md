@@ -20,7 +20,7 @@ Stock Prediction is an application for creating simple machine learning and deep
 ## Setup
 1. Clone GitHub repository 
 ``` 
-git clone https://github.com/m-miler/investment_portfolios.git
+git clone https://github.com/m-miler/stock_prediction.git
 ```
 2. Install docker and docker-compose then run in project file.
 ```
