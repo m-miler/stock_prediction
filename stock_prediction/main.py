@@ -30,6 +30,8 @@ def get_db():
 @app.post("/model/create/", response_model=ModelInfo)
 def create_model(model_params: ModelParameters):
     model: ModelInfo = ModelCreate(model_params=model_params).create()
+    if model is None:
+        raise HTTPException(status_code=404, detail="No enough stock price examples to create prediction model")
     return model
 
 
